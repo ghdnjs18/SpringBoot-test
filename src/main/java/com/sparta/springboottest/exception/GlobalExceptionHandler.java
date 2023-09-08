@@ -3,6 +3,7 @@ package com.sparta.springboottest.exception;
 import com.sparta.springboottest.dto.MessageResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,6 +41,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<MessageResponseDto> runtimeExceptionHandler(NullPointerException ex) {
+        MessageResponseDto message = new MessageResponseDto(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<MessageResponseDto> usernameNotFoundExceptionHandler(NullPointerException ex) {
         MessageResponseDto message = new MessageResponseDto(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
