@@ -24,8 +24,8 @@ public class CommentController {
     }
 
     @PutMapping("/comment/{id}")
-    public CommentResponseDto updateComment(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
-        return commentService.updateComment(id, requestDto, tokenValue);
+    public CommentResponseDto updateComment(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.updateComment(id, requestDto, userDetails.getUser());
     }
 
     @DeleteMapping("/comment/{id}")

@@ -38,12 +38,12 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateComment(Long id, CommentRequestDto requestDto, String tokenValue) {
+    public CommentResponseDto updateComment(Long id, CommentRequestDto requestDto, User user) {
         Comment comment = findComment(id);
         String username = comment.getUser().getUsername();
 
-        if (!username.equals(tokenUsername(tokenValue))) {
-            if (findUser(tokenUsername(tokenValue)).getRole() == UserRoleEnum.ADMIN) {
+        if (!username.equals(user.getUsername())) {
+            if (user.getRole() == UserRoleEnum.ADMIN) {
                 comment.update(requestDto);
 
                 return new CommentResponseDto(comment);
