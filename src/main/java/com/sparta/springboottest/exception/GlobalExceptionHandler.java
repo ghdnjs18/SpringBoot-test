@@ -37,4 +37,10 @@ public class GlobalExceptionHandler {
         MessageResponseDto message = new MessageResponseDto(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<MessageResponseDto> runtimeExceptionHandler(NullPointerException ex) {
+        MessageResponseDto message = new MessageResponseDto(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
 }
