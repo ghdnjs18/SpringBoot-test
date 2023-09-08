@@ -48,12 +48,7 @@ public class BoardService {
         Board board = findBoard(id);
         String username = board.getUser().getUsername();
 
-        if (!username.equals(user.getUsername())) {
-            if (user.getRole() == UserRoleEnum.ADMIN) {
-                board.update(requestDto);
-
-                return new BoardResponseDto(board);
-            }
+        if (!username.equals(user.getUsername()) && user.getRole() != UserRoleEnum.ADMIN) {
             throw new IllegalArgumentException("해당 게시물의 작성자만 수정할 수 있습니다.");
         }
         board.update(requestDto);
@@ -65,17 +60,12 @@ public class BoardService {
         Board board = findBoard(id);
         String username = board.getUser().getUsername();
 
-        MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
-        if (!username.equals(user.getUsername())) {
-            if (user.getRole() == UserRoleEnum.ADMIN) {
-                boardRepository.delete(board);
-
-                return ResponseEntity.status(HttpStatus.OK).body(message);
-            }
+        if (!username.equals(user.getUsername()) && user.getRole() != UserRoleEnum.ADMIN) {
             throw new IllegalArgumentException("해당 게시물의 작성자만 삭제할 수 있습니다.");
         }
         boardRepository.delete(board);
 
+        MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 

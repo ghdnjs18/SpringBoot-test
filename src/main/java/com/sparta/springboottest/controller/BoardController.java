@@ -4,15 +4,12 @@ import com.sparta.springboottest.dto.BoardRequestDto;
 import com.sparta.springboottest.dto.BoardResponseDto;
 import com.sparta.springboottest.dto.ItemResponseDto;
 import com.sparta.springboottest.dto.MessageResponseDto;
-import com.sparta.springboottest.jwt.JwtUtil;
 import com.sparta.springboottest.security.UserDetailsImpl;
 import com.sparta.springboottest.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")

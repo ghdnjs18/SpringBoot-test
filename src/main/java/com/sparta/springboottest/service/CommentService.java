@@ -37,12 +37,7 @@ public class CommentService {
         Comment comment = findComment(id);
         String username = comment.getUser().getUsername();
 
-        if (!username.equals(user.getUsername())) {
-            if (user.getRole() == UserRoleEnum.ADMIN) {
-                comment.update(requestDto);
-
-                return new CommentResponseDto(comment);
-            }
+        if (!username.equals(user.getUsername()) && user.getRole() != UserRoleEnum.ADMIN) {
             throw new IllegalArgumentException("해당 댓글의 작성자만 수정할 수 있습니다.");
         }
         comment.update(requestDto);
@@ -54,17 +49,12 @@ public class CommentService {
         Comment comment = findComment(id);
         String username = comment.getUser().getUsername();
 
-        MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
-        if (!username.equals(user.getUsername())) {
-            if (user.getRole() == UserRoleEnum.ADMIN) {
-                commentRepository.delete(comment);
-
-                return ResponseEntity.status(HttpStatus.OK).body(message);
-            }
+        if (!username.equals(user.getUsername()) && user.getRole() != UserRoleEnum.ADMIN) {
             throw new IllegalArgumentException("해당 댓글의 작성자만 삭제할 수 있습니다.");
         }
         commentRepository.delete(comment);
 
+        MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 

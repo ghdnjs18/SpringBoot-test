@@ -3,7 +3,6 @@ package com.sparta.springboottest.controller;
 import com.sparta.springboottest.dto.CommentRequestDto;
 import com.sparta.springboottest.dto.CommentResponseDto;
 import com.sparta.springboottest.dto.MessageResponseDto;
-import com.sparta.springboottest.jwt.JwtUtil;
 import com.sparta.springboottest.security.UserDetailsImpl;
 import com.sparta.springboottest.service.CommentService;
 import lombok.RequiredArgsConstructor;
