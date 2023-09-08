@@ -27,12 +27,9 @@ public class CommentService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public CommentResponseDto createComment(CommentRequestDto requestDto, String tokenValue) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, User user) {
         Long boardId = requestDto.getBoardId();
         Board board = findBoard(boardId);
-
-        String username = tokenUsername(tokenValue);
-        User user = findUser(username);
 
         Comment comment = new Comment(requestDto, board, user);
         commentRepository.save(comment);
