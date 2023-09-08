@@ -42,7 +42,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/board/{id}")
-    public ResponseEntity<MessageResponseDto> deleteBoard(@PathVariable Long id, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
-        return boardService.deleteBoard(id, tokenValue);
+    public ResponseEntity<MessageResponseDto> deleteBoard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.deleteBoard(id, userDetails.getUser());
     }
 }

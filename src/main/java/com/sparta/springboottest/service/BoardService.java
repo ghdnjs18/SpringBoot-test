@@ -4,11 +4,8 @@ import com.sparta.springboottest.dto.*;
 import com.sparta.springboottest.entity.Board;
 import com.sparta.springboottest.entity.User;
 import com.sparta.springboottest.entity.UserRoleEnum;
-import com.sparta.springboottest.jwt.JwtUtil;
 import com.sparta.springboottest.repository.BoardRepository;
 import com.sparta.springboottest.repository.CommentRepository;
-import com.sparta.springboottest.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
-    private final JwtUtil jwtUtil;
 
     public BoardResponseDto createBoard(BoardRequestDto requestDto, User user) {
         Board board = boardRepository.save(new Board(requestDto, user));
@@ -66,13 +61,13 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
-    public ResponseEntity<MessageResponseDto> deleteBoard(Long id, String tokenValue) {
+    public ResponseEntity<MessageResponseDto> deleteBoard(Long id, User user) {
         Board board = findBoard(id);
         String username = board.getUser().getUsername();
 
         MessageResponseDto message = new MessageResponseDto("게시물 삭제를 성공했습니다.", HttpStatus.OK.value());
-        if (!username.equals(tokenUsername(tokenValue))) {
-            if (findUser(tokenUsername(tokenValue)).getRole() == UserRoleEnum.ADMIN) {
+        if (!username.equals(user.getUsername())) {
+            if (user.getRole() == UserRoleEnum.ADMIN) {
                 boardRepository.delete(board);
 
                 return ResponseEntity.status(HttpStatus.OK).body(message);
@@ -89,26 +84,6 @@ public class BoardService {
         return boardRepository.findById(id).orElseThrow(() ->
                 new NullPointerException("선택한 게시물은 존재하지 않습니다.")
         );
-    }
-
-    // 유저 검색
-    private User findUser(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() ->
-                new NullPointerException("해당 유저는 존재하지 않습니다.")
-        );
-    }
-
-    // 토큰에서 유저네임 가져오기
-    private String tokenUsername(String tokenValue) {
-        // JWT 토큰 substring
-        String token = jwtUtil.substringToken(tokenValue);
-        // 토큰 검증
-        if (!jwtUtil.validateToken(token)) {
-            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
-        }
-        Claims info = jwtUtil.getUserInfoFromToken(token);
-
-        return info.getSubject();
     }
 
     // Board에 Comment 리스트 넣기
