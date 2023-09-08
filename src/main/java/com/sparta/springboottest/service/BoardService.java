@@ -24,13 +24,8 @@ public class BoardService {
     private final CommentRepository commentRepository;
     private final JwtUtil jwtUtil;
 
-    public BoardResponseDto createBoard(BoardRequestDto requestDto, String tokenValue) {
-        String username = tokenUsername(tokenValue);
-        User user = findUser(username);
-
-        Board board = new Board(requestDto, user);
-        boardRepository.save(board);
-
+    public BoardResponseDto createBoard(BoardRequestDto requestDto, User user) {
+        Board board = boardRepository.save(new Board(requestDto, user));
         return new BoardResponseDto(board);
     }
 
@@ -54,12 +49,12 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto, String tokenValue) {
+    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto, User user) {
         Board board = findBoard(id);
         String username = board.getUser().getUsername();
 
-        if (!username.equals(tokenUsername(tokenValue))) {
-            if (findUser(tokenUsername(tokenValue)).getRole() == UserRoleEnum.ADMIN) {
+        if (!username.equals(user.getUsername())) {
+            if (user.getRole() == UserRoleEnum.ADMIN) {
                 board.update(requestDto);
 
                 return new BoardResponseDto(board);
